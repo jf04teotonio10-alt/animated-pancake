@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "validate": "npm run test && npm run typecheck && npm run build",
+    "test:phase1": "tsx --test tests/phase1.test.ts",
+    "test:phase2": "tsx --test tests/phase2.test.ts"
   },
   "dependencies": {
     "clsx": "2.1.1",
@@ -21,6 +26,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3",
     "vite": "7.3.2",
     "vite-plugin-singlefile": "2.3.0"

@@ -15,7 +15,7 @@ export function TopBar({ g, onPause, onAutoChange }: { g: Game; onPause: () => v
   if (g.state === 'build') for (const s of g.nextQueue) counts[s.type] = (counts[s.type] ?? 0) + 1;
   const bossNext = Object.keys(counts).find(k => ENEMIES[k].faction === 'boss');
   const countdown = g.state === 'build' && g.autoStart && g.wave > 0 ? Math.max(0, Math.ceil(g.autoTimer)) : null;
-  const toggle = () => { audio.play('click'); g.setAuto(!g.autoStart); onAutoChange(!g.autoStart, g.autoInterval); };
+  const toggle = () => { audio.play('click'); g.setAuto(!g.autoStart); onAutoChange(g.autoStart, g.autoInterval); };
   const changeInt = (d: number) => { g.setAutoInterval(Math.max(3, Math.min(12, g.autoInterval + d))); onAutoChange(g.autoStart, g.autoInterval); };
   return (
     <div className="flex items-stretch gap-2 px-2 h-16 bg-gradient-to-b from-[#0d0a1c] to-[#080613] border-b border-cyan-400/30 shrink-0 z-20">
@@ -127,7 +127,7 @@ export function Shop({ g, unlocked, hover, setHover }: { g: Game; unlocked: stri
             </div>
           </div>
         ) : (
-          <div className="text-white/40 leading-tight">Clique num mercenário e depois num local livre do mapa. Nós de energia (quadrados brilhantes) dão +25% dano. Barris vermelhos explodem ao clicar.<br /><br />Atalhos: ESPAÇO inicia onda · P pausa · ESC cancela · F velocidade. Com AUTO WAVE ligado a próxima onda começa sozinha e você continua comprando e evoluindo durante o intervalo.</div>
+          <div className="text-white/40 leading-tight">Clique num mercenário e depois num local livre do mapa. Nós de energia (quadrados brilhantes) dão +25% dano. Barris vermelhos explodem ao clicar. Chefes que escapam causam dano proporcional à ameaça; a partida só termina quando as vidas chegam a zero.<br /><br />Atalhos: ESPAÇO inicia onda · P pausa · ESC cancela · F velocidade. Com AUTO WAVE ligado a próxima onda começa sozinha e você continua comprando e evoluindo durante o intervalo.</div>
         )}
       </div>
       <div className="p-2 border-t border-white/10 grid grid-cols-2 gap-1">
@@ -235,8 +235,7 @@ export function BossBar({ g }: { g: Game }) {
       <div className="h-3 bg-black/80 border mt-1 relative" style={{ borderColor: info.color }}>
         <div className="h-full transition-all" style={{ width: `${Math.max(0, b.hp / b.maxHp) * 100}%`, background: `linear-gradient(90deg, ${info.color}, #fff)` }} />
         {b.shield > 0 && <div className="absolute top-0 left-0 h-1.5 bg-cyan-200 shadow-[0_0_6px_#7df9ff]" style={{ width: `${Math.min(100, (b.shield / b.maxHp) * 100)}%` }} />}
-        <div className="absolute -top-0.5 h-4 w-px bg-white/70" style={{ left: '60%' }} />
-        <div className="absolute -top-0.5 h-4 w-px bg-white/70" style={{ left: '30%' }} />
+        {info.phaseThresholds.map(threshold => <div key={threshold} className="absolute -top-0.5 h-4 w-px bg-white/70" style={{ left: `${threshold * 100}%` }} />)}
         <div className="absolute top-0 left-0 h-full w-full pointer-events-none" style={{ background: 'repeating-linear-gradient(90deg, transparent 0 20px, #00000066 20px 21px)' }} />
       </div>
     </div>

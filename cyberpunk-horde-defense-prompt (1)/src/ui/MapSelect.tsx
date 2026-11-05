@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { MAPS, buildLayout } from '../game/data/maps';
+import { MAPS } from '../game/data/maps';
+import { buildLayout } from '../game/engine/layout';
 import { renderMapArt } from '../game/art/mapArt';
 import type { SaveData } from '../game/systems/save';
 import { Title } from './common';

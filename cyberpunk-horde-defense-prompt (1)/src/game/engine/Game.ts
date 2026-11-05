@@ -1,7 +1,8 @@
 import type { MapDef, TroopDef, TargetMode } from '../types';
-import { ENEMIES } from '../data/enemies';
+import { ENEMIES, bossCoreDamage } from '../data/enemies';
 import { TROOP_MAP } from '../data/troops';
-import { buildLayout, TILE, COLS, ROWS, type Layout } from '../data/maps';
+import { TILE, COLS, ROWS } from '../data/maps';
+import { buildLayout, type Layout } from './layout';
 import { renderMapArt, type MapArt } from '../art/mapArt';
 import { buildWave, hpScale, EVENTS, FINAL_WAVE, NEW_ENEMY_AT, type SpawnEntry, type WaveEvent } from '../systems/waves';
 import { audio } from '../systems/audio';
@@ -38,6 +39,8 @@ export class Game {
   wave = 0;
   state: GameState = 'build';
   endless = false;
+  victoryAchieved = false;
+  lossReason: 'boss' | 'lives' | null = null;
   speed = 1;
   paused = false;
   autoStart = false;
@@ -432,6 +435,7 @@ export class Game {
     if (income) for (const t of this.towers) if (t.eff.income) this.text(t.x, t.y - 28, `+${Math.round(t.eff.income)}$`, '#fcee0a', true);
     audio.play('coin');
     if (this.wave === FINAL_WAVE && !this.endless) {
+      this.victoryAchieved = true;
       this.state = 'won';
       audio.play('win');
     } else {
@@ -443,7 +447,7 @@ export class Game {
 
   continueEndless() { this.endless = true; this.state = 'build'; this.toast('MODO INFINITO: versões aprimoradas dos chefes aguardam...', '#ff2bd6'); this.emit(); }
 
-  chipsEarned() { return Math.floor(this.wavesCleared * 1.2 * this.map.difficulty + this.bossesKilled * 8 + (this.state === 'won' ? 25 : 0)); }
+  chipsEarned() { return Math.floor(this.wavesCleared * 1.2 * this.map.difficulty + this.bossesKilled * 8 + (this.victoryAchieved ? 25 : 0)); }
 
   // ===== main loop =====
   update(realDt: number) {
@@ -491,11 +495,14 @@ export class Game {
     for (const h of this.hazards) h.cd = Math.max(0, h.cd - dt);
 
     this.updateEnemies(dt);
+    if (this.lives <= 0) {
+      this.lives = 0; this.state = 'lost'; this.lossReason ??= 'lives';
+      audio.play('lose'); audio.intense = false; this.emit(); return;
+    }
     this.updateTowers(dt);
     this.updateProjectiles(dt);
     this.updateEffects(dt);
 
-    if (this.lives <= 0 && this.state !== 'lost') { this.lives = 0; this.state = 'lost'; audio.play('lose'); audio.intense = false; this.emit(); return; }
     if (this.state === 'wave' && !this.queue.length && !this.enemies.length) this.endWave();
   }
 
@@ -527,12 +534,15 @@ export class Game {
       const len = this.layout.pathLen[e.path];
       if (e.dist >= len) {
         e.dead = true;
-        const loss = e.def.faction === 'boss' ? (e.hard ? this.lives : 60) : e.def.lives;
+        const bossEscape = e.def.faction === 'boss';
+        const loss = bossEscape ? bossCoreDamage(e.type, e.hard) : e.def.lives;
         this.lives -= loss; this.livesLostWave += loss;
+        if (bossEscape && this.lives <= 0) this.lossReason = 'boss';
         this.shake = Math.max(this.shake, e.def.faction === 'boss' ? 12 : 3);
         this.text(e.x - 20, e.y - 10, `-${loss} ♥`, '#ff3b3b', true);
         if (e.def.faction === 'boss') { this.boss = null; audio.intense = false; }
         audio.play('leak');
+        if (this.lives <= 0) break;
         continue;
       }
       const p = this.posAt(e.path, e.dist);

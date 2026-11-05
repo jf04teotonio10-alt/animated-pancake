@@ -3,9 +3,9 @@ import { TROOPS } from '../game/data/troops';
 import { portraitURL } from '../game/art/portraits';
 import type { SaveData } from '../game/systems/save';
 
-interface Props { save: SaveData; onPlay: () => void; onDatabase: (tab: 'troops' | 'lab' | 'bestiary') => void; onToggleMute: () => void }
+interface Props { save: SaveData; onPlay: () => void; onDatabase: (tab: 'troops' | 'lab' | 'bestiary') => void; onToggleMute: () => void; onOpenSettings: () => void }
 
-export default function MainMenu({ save, onPlay, onDatabase, onToggleMute }: Props) {
+export default function MainMenu({ save, onPlay, onDatabase, onToggleMute, onOpenSettings }: Props) {
   return (
     <div className="relative w-full h-full overflow-hidden scanlines">
       <CityBackdrop />
@@ -38,6 +38,7 @@ export default function MainMenu({ save, onPlay, onDatabase, onToggleMute }: Pro
           <button className="btn btn-y" onClick={() => onDatabase('lab')}>CYBERWARE LAB</button>
           <button className="btn btn-m" onClick={() => onDatabase('bestiary')}>BESTIÁRIO</button>
           <button className="btn" onClick={onToggleMute}>{save.settings.muted ? '🔇 SOM: OFF' : '🔊 SOM: ON'}</button>
+          <button className="btn btn-c" onClick={onOpenSettings}>⚙ CONFIGURAÇÕES</button>
         </div>
 
         <div className="flex items-center gap-4 font-pixel text-[9px] mt-2">

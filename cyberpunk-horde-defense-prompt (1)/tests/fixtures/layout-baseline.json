@@ -1,0 +1,26 @@
+[
+  {
+    "id": "night",
+    "sha256": "6f6a203d05f67bb63ec007eed8a4eedcab7a3192f32021fec6927c089f9a3ead"
+  },
+  {
+    "id": "foundry",
+    "sha256": "8ea83d858bb0a7f825e6c0780a86ed0d8f02a56fdd137292721b768e14a03001"
+  },
+  {
+    "id": "corp",
+    "sha256": "a35900cc1491f8c5e663a4fca5f8c7ef04ecd73628cabe5e9d2c1039917041e1"
+  },
+  {
+    "id": "metro",
+    "sha256": "ed183a0657d15e709d32ed739312af1685a4c1c60fc89d53e54b4ddb5662070c"
+  },
+  {
+    "id": "lab",
+    "sha256": "4c935978568e6eb726ffa22d8612165e634a7d018d82038ad0b0af2f6209d972"
+  },
+  {
+    "id": "favela",
+    "sha256": "a4ff23a37e5eed08e54825c7cf66e389abc539e7a8998bd2b8092a23b236a984"
+  }
+]

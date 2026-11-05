@@ -227,7 +227,7 @@ export const TROOPS: TroopDef[] = [
         { name: 'Recarga Rápida', desc: '+40% cadência.', mul: { rate: 1.4 } },
         { name: 'Ciclo Duplo', desc: '+40% cadência.', mul: { rate: 1.4 } },
         { name: 'Campo Estático', desc: 'Humanos ficam 30% mais lentos por 2s.', add: { slow: 0.3, slowDur: 2 } },
-        { name: 'Ondas Detectoras', desc: 'Pulsos revelam e atingem camuflados.', add: { camo: 1, damage: 3 } },
+        { name: 'Ondas Detectoras', desc: 'Blackout detecta e atinge camuflados; +3 dano.', add: { camo: 1, damage: 3 } },
         { name: 'TEMPESTADE EMP', desc: 'Cadência x2, dano x2.5.', mul: { rate: 2, damage: 2.5 } },
       ]),
       path('DESMONTAGEM', '#00fff0', 450, [
@@ -235,15 +235,15 @@ export const TROOPS: TroopDef[] = [
         { name: 'Pulso Penetrante', desc: 'Ignora 40% da armadura.', add: { armorPen: 0.4 } },
         { name: 'Vulnerabilidade', desc: 'Alvos recebem +15% dano.', add: { mark: 0.15 } },
         { name: 'Quebra-Escudos', desc: 'x1.8 contra chefes.', add: { bossMult: 0.8 } },
-        { name: 'KILL SWITCH', desc: 'Executa qualquer alvo abaixo de 20% de vida.', add: { execute: 0.2, damage: 6 } },
+        { name: 'KILL SWITCH', desc: 'Executa inimigos que não são chefes abaixo de 20% de vida; +6 dano.', add: { execute: 0.2, damage: 6 } },
       ]),
     ],
   },
   {
-    id: 'sniper', name: 'CYBER SNIPER', title: 'Atirador Kiroshi', category: 'Precisão', cost: 420, unlockCost: 0,
+    id: 'sniper', name: 'CYBER SNIPER', title: 'Atiradora Kiroshi', category: 'Precisão', cost: 420, unlockCost: 0,
     kind: 'hitscan', dmgType: 'kinetic', projColor: '#fcee0a',
     base: S({ damage: 14, range: 270, rate: 0.45, armorPen: 0.3 }),
-    lore: 'Veterano da Guerra Unificada com olhos Kiroshi de 12 lentes. Não fala mais que três palavras por dia. Nunca precisou de quatro.',
+    lore: 'Veterana da Guerra Unificada com olhos Kiroshi de 12 lentes. Não fala mais que três palavras por dia. Nunca precisou de quatro.',
     ability: 'Disparos instantâneos de alcance extremo que ignoram armadura.',
     strengths: 'Dano massivo em alvo único, alcance enorme.', weaknesses: 'Muito lento contra enxames.',
     look: { skin: '#b07a5a', hair: '#5a5f6e', hairStyle: 'long', eye: 'mono', eyeColor: '#fcee0a', top: '#2c2f22', top2: '#fcee0a', coat: 'trench', pants: '#23251c', boots: '#121310', armL: 'sleeve', armR: 'chrome', weapon: 'sniper', weaponColor: '#3a3f4a', glow: '#fcee0a' },
@@ -263,7 +263,7 @@ export const TROOPS: TroopDef[] = [
         { name: 'ELITE MARKSMAN', desc: 'Cadência x2.2, 20% crítico.', mul: { rate: 2.2 }, add: { crit: 0.2 } },
       ]),
       path('OLHO KIROSHI', '#00fff0', 420, [
-        { name: 'Lente Térmica', desc: 'Detecta camuflados.', add: { camo: 1 } },
+        { name: 'Lente Térmica', desc: 'Sniper detecta camuflados.', add: { camo: 1 } },
         { name: 'Zoom Orbital', desc: '+100 alcance.', add: { range: 100 } },
         { name: 'Pontos Fracos', desc: '25% crítico (x3).', add: { crit: 0.25, critMult: 1 } },
         { name: 'Telemetria', desc: 'Alvos recebem +20% dano.', add: { mark: 0.2 } },
@@ -277,7 +277,7 @@ export const TROOPS: TroopDef[] = [
     base: S({ damage: 1, range: 72, rate: 4, burn: 2, burnDur: 2, air: 0, pierce: 99 }),
     lore: 'Líder da gangue Cinzas de Kabuki. Tatuagens que brilham com o calor. Acredita que a cidade só será limpa pelo fogo.',
     ability: 'Lança-chamas em cone que incendeia todos os inimigos.',
-    strengths: 'Derrete enxames, queimadura acumulada.', weaknesses: 'Curto alcance, não atinge aéreos.',
+    strengths: 'Derrete enxames, queimadura persistente (não acumulativa).', weaknesses: 'Curto alcance, não atinge aéreos.',
     look: { skin: '#e3a57e', hair: '#ff6a00', hairStyle: 'twin', eye: 'eyes', eyeColor: '#ffd000', top: '#2a1208', top2: '#ff6a00', coat: 'jacket', pants: '#2a2a2a', boots: '#ff6a00', armL: 'skin', armR: 'skin', weapon: 'flamer', weaponColor: '#7a3a1a', glow: '#ff6a00', extra: 'tanks' },
     paths: [
       path('COMBUSTÍVEL', '#ff3b3b', 360, [
@@ -296,9 +296,9 @@ export const TROOPS: TroopDef[] = [
       ]),
       path('NAPALM', '#ff2bd6', 360, [
         { name: 'Pânico', desc: 'Inimigos em chamas 15% mais lentos.', add: { slow: 0.15, slowDur: 1 } },
-        { name: 'Derrete-Placas', desc: 'Reduz 3% da armadura por tick.', add: { shred: 0.03 } },
+        { name: 'Derrete-Placas', desc: 'Reduz 3% da armadura por ataque.', add: { shred: 0.03 } },
         { name: 'Chamas Ascendentes', desc: 'Atinge drones aéreos.', add: { air: 1 } },
-        { name: 'Cremação', desc: 'Executa abaixo de 10%.', add: { execute: 0.1 } },
+        { name: 'Cremação', desc: 'Executa inimigos comuns abaixo de 10%.', add: { execute: 0.1 } },
         { name: 'FÊNIX DE NAPALM', desc: '+8 queimadura/s, lentidão 30%.', add: { burn: 8, burnDur: 2, slow: 0.15 } },
       ]),
     ],
@@ -354,7 +354,7 @@ export const TROOPS: TroopDef[] = [
       path('FREQUÊNCIA', '#fcee0a', 420, [
         { name: 'BPM Acelerado', desc: '+35% cadência.', mul: { rate: 1.35 } },
         { name: 'Drop', desc: '+35% cadência.', mul: { rate: 1.35 } },
-        { name: 'Ecolocalização', desc: 'Detecta camuflados.', add: { camo: 1 } },
+        { name: 'Ecolocalização', desc: 'Sniper detecta camuflados.', add: { camo: 1 } },
         { name: 'Reverb', desc: '+20 alcance, +2 dano.', add: { range: 20, damage: 2 } },
         { name: 'SHOW FINAL', desc: 'Cadência x2.5.', mul: { rate: 2.5 } },
       ]),
@@ -393,7 +393,7 @@ export const TROOPS: TroopDef[] = [
       path('NOVE CAUDAS', '#ff2bd6', 300, [
         { name: 'Cauda Dupla', desc: '+1 projétil.', add: { multishot: 1 } },
         { name: 'Agilidade Vulpina', desc: '+30% cadência.', mul: { rate: 1.3 } },
-        { name: 'Sensores da Máscara', desc: 'Detecta camuflados.', add: { camo: 1 } },
+        { name: 'Sensores da Máscara', desc: 'Sniper detecta camuflados.', add: { camo: 1 } },
         { name: 'Raposa Espiritual', desc: '+1 projétil, +15 alcance.', add: { multishot: 1, range: 15 } },
         { name: 'KYUUBI GLACIAL', desc: '+4 projéteis, +30 alcance.', add: { multishot: 4, range: 30 } },
       ]),
@@ -455,7 +455,7 @@ export const TROOPS: TroopDef[] = [
         { name: 'DRONES SUICIDAS', desc: 'Dano x3, área +20.', mul: { summonDmg: 3 }, add: { splash: 20 } },
       ]),
       path('NEURO-LINK', '#00fff0', 520, [
-        { name: 'Câmeras IR', desc: 'Detecta camuflados.', add: { camo: 1 } },
+        { name: 'Câmeras IR', desc: 'Sniper detecta camuflados.', add: { camo: 1 } },
         { name: 'Raio de Operação', desc: '+30 alcance.', add: { range: 30 } },
         { name: 'Pintar Alvo', desc: 'Alvos recebem +10% dano.', add: { mark: 0.1 } },
         { name: 'Pulso Inibidor', desc: 'Lentidão 20%.', add: { slow: 0.2, slowDur: 1 } },
@@ -483,7 +483,7 @@ export const TROOPS: TroopDef[] = [
         { name: 'Pacote Saltitante', desc: 'Salta para +1 inimigo.', add: { chain: 1 } },
         { name: 'Largura de Banda', desc: '+30% cadência.', mul: { rate: 1.3 } },
         { name: 'Broadcast', desc: 'Salta para +2 inimigos.', add: { chain: 2 } },
-        { name: 'Varredura de Rede', desc: 'Detecta camuflados.', add: { camo: 1 } },
+        { name: 'Varredura de Rede', desc: 'Sniper detecta camuflados.', add: { camo: 1 } },
         { name: 'LOOP INFINITO', desc: '+5 saltos, cadência x2.', add: { chain: 5 }, mul: { rate: 2 } },
       ]),
       path('ROLLBACK', '#00fff0', 360, [

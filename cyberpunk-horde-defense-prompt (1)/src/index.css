@@ -40,6 +40,8 @@ body { font-family: "VT323", monospace; font-size: 18px; user-select: none; }
 .btn-m:hover:not(:disabled) { background: #ff2bd6; color: #05040a; box-shadow: 0 0 16px #ff2bd6; }
 .btn-y { border-color: #fcee0a; color: #fcee0a; background: rgba(252,238,10,0.06); }
 .btn-y:hover:not(:disabled) { background: #fcee0a; color: #05040a; box-shadow: 0 0 16px #fcee0a; }
+.btn-c { border-color: #00fff0; color: #00fff0; background: rgba(0,255,240,0.06); }
+.btn-c:hover:not(:disabled) { background: #00fff0; color: #05040a; box-shadow: 0 0 16px #00fff0; }
 
 @keyframes glitch { 0%,100%{transform:translate(0)} 20%{transform:translate(-2px,1px)} 40%{transform:translate(2px,-1px)} 60%{transform:translate(-1px,-1px)} 80%{transform:translate(1px,2px)} }
 .glitch { animation: glitch .35s infinite steps(2); }

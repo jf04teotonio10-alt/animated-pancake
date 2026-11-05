@@ -1,5 +1,6 @@
 import type { MapDef } from '../types';
-import { COLS, ROWS, TILE, W, H, type Layout } from '../data/maps';
+import { COLS, ROWS, TILE, W, H } from '../data/maps';
+import type { Layout } from '../engine/layout';
 import { shade } from './sprites';
 
 export interface NeonSign { x: number; y: number; w: number; h: number; color: string; text: string; phase: number }

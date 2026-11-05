@@ -44,8 +44,15 @@ export const ENEMIES: Record<string, EnemyDef> = {
     desc: 'O primeiro humano 100% reconstruído. Teletransporta, clona-se e sobrecarrega.' },
 };
 
-export const BOSS_INFO: Record<string, { subtitle: string; quote: string; color: string }> = {
-  butcher: { subtitle: 'O AÇOUGUEIRO DE KABUKI', quote: '"CARNE... E... CROMO..."', color: '#ff3b3b' },
-  archon: { subtitle: 'PROTÓTIPO DE SUPREMACIA URBANA', quote: '"ALVO IDENTIFICADO. PROTOCOLO DE EXTERMÍNIO ATIVO."', color: '#00fff0' },
-  saint: { subtitle: 'A ASCENSÃO DA CARNE AO METAL', quote: '"Eu não sou mais humano. Eu sou a resposta."', color: '#fcee0a' },
+export const BOSS_INFO: Record<string, { subtitle: string; quote: string; color: string; phaseThresholds: [number, number]; coreDamage: number }> = {
+  butcher: { subtitle: 'O AÇOUGUEIRO DE KABUKI', quote: '"CARNE... E... CROMO..."', color: '#ff3b3b', phaseThresholds: [0.6, 0.3], coreDamage: 24 },
+  archon: { subtitle: 'PROTÓTIPO DE SUPREMACIA URBANA', quote: '"ALVO IDENTIFICADO. PROTOCOLO DE EXTERMÍNIO ATIVO."', color: '#00fff0', phaseThresholds: [0.5, 0.2], coreDamage: 38 },
+  saint: { subtitle: 'A ASCENSÃO DA CARNE AO METAL', quote: '"Eu não sou mais humano. Eu sou a resposta."', color: '#fcee0a', phaseThresholds: [0.5, 0.25], coreDamage: 56 },
 };
+
+
+/** Damage to the core when a boss escapes; scales with boss threat and endless reinforcement. */
+export function bossCoreDamage(type: string, hard = false): number {
+  const base = BOSS_INFO[type]?.coreDamage ?? 30;
+  return Math.round(base * (hard ? 1.5 : 1));
+}

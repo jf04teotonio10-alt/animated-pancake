@@ -1,6 +1,7 @@
 import type { Game } from './Game';
 import type { Enemy, Tower } from './entities';
 import { audio } from '../systems/audio';
+import { BOSS_INFO } from '../data/enemies';
 
 function towersNear(g: Game, x: number, y: number, r: number): Tower[] {
   return g.towers.filter(t => Math.hypot(t.x - x, t.y - y) <= r);
@@ -80,8 +81,8 @@ function setPhase(g: Game, e: Enemy, p: number, msg: string, color: string) {
 }
 
 function butcher(g: Game, e: Enemy, dt: number, frac: number, cdm: number) {
-  if (frac < 0.6) setPhase(g, e, 2, 'THE BUTCHER: FASE 2 — A MATILHA', '#ff3b3b');
-  if (frac < 0.3) setPhase(g, e, 3, 'THE BUTCHER ENTROU EM FÚRIA!', '#ff0000');
+  if (frac < BOSS_INFO.butcher.phaseThresholds[0]) setPhase(g, e, 2, 'THE BUTCHER: FASE 2 — A MATILHA', '#ff3b3b');
+  if (frac < BOSS_INFO.butcher.phaseThresholds[1]) setPhase(g, e, 3, 'THE BUTCHER ENTROU EM FÚRIA!', '#ff0000');
   const rage = e.phase >= 3 ? 0.6 : 1;
   // charge
   e.t1 -= dt;
@@ -116,8 +117,8 @@ function butcher(g: Game, e: Enemy, dt: number, frac: number, cdm: number) {
 }
 
 function archon(g: Game, e: Enemy, dt: number, frac: number, cdm: number) {
-  if (frac < 0.5) setPhase(g, e, 2, 'ARCHON-09: PROTOCOLO EMP LIBERADO', '#00fff0');
-  if (frac < 0.2) setPhase(g, e, 3, 'ARCHON-09: SOBRECARGA DO REATOR', '#ff2bd6');
+  if (frac < BOSS_INFO.archon.phaseThresholds[0]) setPhase(g, e, 2, 'ARCHON-09: PROTOCOLO EMP LIBERADO', '#00fff0');
+  if (frac < BOSS_INFO.archon.phaseThresholds[1]) setPhase(g, e, 3, 'ARCHON-09: SOBRECARGA DO REATOR', '#ff2bd6');
   // shield regen
   e.t4 -= dt;
   if (e.shield <= 0 && e.t4 <= 0) {
@@ -157,8 +158,8 @@ function archon(g: Game, e: Enemy, dt: number, frac: number, cdm: number) {
 }
 
 function saint(g: Game, e: Enemy, dt: number, frac: number, cdm: number) {
-  if (frac < 0.5) setPhase(g, e, 2, 'CHROME SAINT: SOBRECARGA CIBERNÉTICA', '#fcee0a');
-  if (frac < 0.25) setPhase(g, e, 3, 'CHROME SAINT: ASCENSÃO', '#ffffff');
+  if (frac < BOSS_INFO.saint.phaseThresholds[0]) setPhase(g, e, 2, 'CHROME SAINT: SOBRECARGA CIBERNÉTICA', '#fcee0a');
+  if (frac < BOSS_INFO.saint.phaseThresholds[1]) setPhase(g, e, 3, 'CHROME SAINT: ASCENSÃO', '#ffffff');
   const over = e.phase >= 2 ? 0.7 : 1;
   // teleport
   e.t1 -= dt;

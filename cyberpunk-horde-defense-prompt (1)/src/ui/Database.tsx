@@ -128,7 +128,7 @@ export default function Database({ save, tab: initial, setSave, onBack }: Props)
                   <Metric l="PERFURA" v={troop.base.pierce.toString()} c="#ffffff" />
                   <Metric l="DESBLOQ." v={troop.unlockCost ? `◆${troop.unlockCost}` : 'INICIAL'} c="#ff2bd6" />
                 </div>
-                {!unlocked(troop.id) && <button className="btn btn-y mt-2 lg:hidden" onClick={unlock} disabled={save.chips < troop.unlockCost}>DESBLOQUEAR ◆{troop.unlockCost}</button>}
+                {!unlocked(troop.id) && <button className="btn btn-y mt-2 xl:hidden" onClick={unlock} disabled={save.chips < troop.unlockCost}>DESBLOQUEAR ◆{troop.unlockCost}</button>}
               </div>
             </div>
 

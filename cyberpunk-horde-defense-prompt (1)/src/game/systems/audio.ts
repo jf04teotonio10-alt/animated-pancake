@@ -1,4 +1,6 @@
 // Fully synthesized audio (WebAudio) — no external assets.
+export interface AudioSettings { muted: boolean; music: boolean; musicVolume: number; sfxVolume: number }
+
 class AudioSys {
   ctx: AudioContext | null = null;
   master: GainNode | null = null;
@@ -6,6 +8,7 @@ class AudioSys {
   musicGain: GainNode | null = null;
   muted = false;
   musicOn = true;
+  private settings: AudioSettings = { muted: false, music: true, musicVolume: 1, sfxVolume: 1 };
   last: Record<string, number> = {};
   musicTimer: number | null = null;
   step = 0;
@@ -18,10 +21,21 @@ class AudioSys {
       this.master = this.ctx.createGain(); this.master.gain.value = 0.5; this.master.connect(this.ctx.destination);
       this.sfxGain = this.ctx.createGain(); this.sfxGain.gain.value = 0.55; this.sfxGain.connect(this.master);
       this.musicGain = this.ctx.createGain(); this.musicGain.gain.value = 0.22; this.musicGain.connect(this.master);
+      this.applySettings();
     } catch { this.ctx = null; }
   }
 
-  setMuted(m: boolean) { this.muted = m; if (this.master) this.master.gain.value = m ? 0 : 0.5; }
+  private applySettings() {
+    this.muted = this.settings.muted;
+    this.musicOn = this.settings.music;
+    if (this.master) this.master.gain.value = this.muted ? 0 : 0.5;
+    if (this.sfxGain) this.sfxGain.gain.value = 0.55 * this.settings.sfxVolume;
+    if (this.musicGain) this.musicGain.gain.value = 0.22 * (this.musicOn ? this.settings.musicVolume : 0);
+  }
+
+  configure(settings: AudioSettings) { this.settings = { ...settings }; this.applySettings(); }
+
+  setMuted(m: boolean) { this.configure({ ...this.settings, muted: m }); }
 
   private tone(freq: number, dur: number, type: OscillatorType, vol: number, slide = 0, dest?: AudioNode) {
     const c = this.ctx; if (!c) return;

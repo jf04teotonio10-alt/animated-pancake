@@ -4,20 +4,27 @@ import { render } from '../game/engine/render';
 import { MAPS, W, H, TILE } from '../game/data/maps';
 import type { SaveData } from '../game/systems/save';
 import { audio } from '../game/systems/audio';
+import { RunRewards, applyRunRewards } from '../game/systems/rewards';
 import { TopBar, Shop, TowerPanel, BossBar, BossIntro } from './GamePanels';
 
-interface Props { mapId: string; save: SaveData; commit: (fn: (s: SaveData) => SaveData) => void; onExit: () => void }
+interface Props { mapId: string; save: SaveData; commit: (fn: (s: SaveData) => SaveData) => void; onExit: () => void; onOpenSettings: () => void }
 
-export default function GameScreen({ mapId, save, commit, onExit }: Props) {
+export default function GameScreen({ mapId, save, commit, onExit, onOpenSettings }: Props) {
   const [game, setGame] = useState(() => new Game(MAPS.find(m => m.id === mapId)!, save));
   const [, force] = useReducer((x: number) => x + 1, 0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [hover, setHover] = useState<string | null>(null);
-  const awarded = useRef(0);
+  const rewards = useRef(new RunRewards());
 
   useEffect(() => game.subscribe(force), [game]);
+
+  // Keep the running match in sync when settings change from the settings panel.
+  useEffect(() => {
+    if (game.autoStart !== save.settings.autoWave) game.setAuto(save.settings.autoWave);
+    if (game.autoInterval !== save.settings.autoInterval) game.setAutoInterval(save.settings.autoInterval);
+  }, [game, save.settings.autoWave, save.settings.autoInterval]);
 
   // main loop
   useEffect(() => {
@@ -46,19 +53,14 @@ export default function GameScreen({ mapId, save, commit, onExit }: Props) {
 
   // award chips + records when run ends
   const awardChips = () => {
-    const earned = game.chipsEarned();
-    const delta = earned - awarded.current;
-    awarded.current = earned;
-    commit(s => ({
-      ...s, chips: s.chips + Math.max(0, delta),
-      best: { ...s.best, [mapId]: Math.max(s.best[mapId] ?? 0, game.wavesCleared) },
-      wins: game.state === 'won' || game.wavesCleared >= 30 ? { ...s.wins, [mapId]: (s.wins[mapId] ?? 0) + (game.state === 'won' ? 1 : 0) } : s.wins,
-    }));
-    return Math.max(0, delta);
+    const reward = rewards.current.settle(game.chipsEarned(), game.victoryAchieved);
+    const wavesCleared = game.wavesCleared;
+    commit(s => applyRunRewards(s, mapId, wavesCleared, reward));
+    return reward.chips;
   };
   const [endChips, setEndChips] = useState<number | null>(null);
   useEffect(() => {
-    if ((game.state === 'won' || game.state === 'lost') && endChips === null) setEndChips(awardChips());
+    if ((game.state === 'won' || game.state === 'lost') && endChips === null) { awardChips(); setEndChips(game.chipsEarned()); }
     if (game.state !== 'won' && game.state !== 'lost' && endChips !== null) setEndChips(null);
   });
 
@@ -101,8 +103,8 @@ export default function GameScreen({ mapId, save, commit, onExit }: Props) {
   };
   const onContext = (e: React.MouseEvent) => { e.preventDefault(); game.placing = null; game.aiming = null; game.selected = null; game.emit(); };
 
-  const restart = () => { awardChips(); awarded.current = 0; setEndChips(null); setGame(new Game(MAPS.find(m => m.id === mapId)!, save)); };
-  const quit = () => { if (game.state !== 'won' && game.state !== 'lost') awardChips(); onExit(); };
+  const restart = () => { awardChips(); rewards.current = new RunRewards(); setEndChips(null); setGame(new Game(MAPS.find(m => m.id === mapId)!, save)); };
+  const quit = () => { awardChips(); onExit(); };
   const setMute = (m: boolean) => { audio.setMuted(m); commit(s => ({ ...s, settings: { ...s.settings, muted: m } })); };
 
   const g = game;
@@ -142,6 +144,7 @@ export default function GameScreen({ mapId, save, commit, onExit }: Props) {
                   <button className="btn" onClick={() => { g.paused = false; g.emit(); }}>▶ CONTINUAR</button>
                   <button className="btn btn-y" onClick={() => setMute(!save.settings.muted)}>{save.settings.muted ? '🔇 SOM OFF' : '🔊 SOM ON'}</button>
                   <button className="btn" onClick={() => { g.setAuto(!g.autoStart); commit(s => ({ ...s, settings: { ...s.settings, autoWave: g.autoStart, autoInterval: g.autoInterval } })); }}>AUTO WAVE: {g.autoStart ? 'ON' : 'OFF'}</button>
+                  <button className="btn" onClick={() => { g.paused = true; g.emit(); onOpenSettings(); }}>⚙ ÁUDIO / SAVE</button>
                   <button className="btn btn-m" onClick={restart}>↻ REINICIAR</button>
                   <button className="btn btn-m" onClick={quit}>⏏ SAIR PARA O MENU</button>
                 </div>
@@ -153,9 +156,9 @@ export default function GameScreen({ mapId, save, commit, onExit }: Props) {
                 <div className="font-pixel text-3xl neon-c my-3">VITÓRIA</div>
                 <RunStats g={g} chips={endChips} />
                 <div className="flex flex-col gap-2 w-72 mt-4">
-                  <button className="btn btn-m" onClick={() => g.continueEndless()}>∞ CONTINUAR (MODO INFINITO)</button>
+                  <button className="btn btn-m" onClick={() => { awardChips(); g.continueEndless(); }}>∞ CONTINUAR (MODO INFINITO)</button>
                   <button className="btn" onClick={restart}>↻ JOGAR NOVAMENTE</button>
-                  <button className="btn btn-y" onClick={onExit}>⏏ MENU</button>
+                  <button className="btn btn-y" onClick={quit}>⏏ MENU</button>
                 </div>
               </Overlay>
             )}
@@ -163,10 +166,11 @@ export default function GameScreen({ mapId, save, commit, onExit }: Props) {
               <Overlay red>
                 <div className="font-pixel text-[10px] neon-r flicker">NÚCLEO COMPROMETIDO</div>
                 <div className="font-pixel text-3xl neon-r my-3 glitch">FLATLINE</div>
+                {g.lossReason === 'boss' && <div className="text-white/80 text-center">O impacto de um chefe zerou o núcleo.</div>}
                 <RunStats g={g} chips={endChips} />
                 <div className="flex flex-col gap-2 w-64 mt-4">
                   <button className="btn" onClick={restart}>↻ TENTAR NOVAMENTE</button>
-                  <button className="btn btn-y" onClick={onExit}>⏏ MENU</button>
+                  <button className="btn btn-y" onClick={quit}>⏏ MENU</button>
                 </div>
               </Overlay>
             )}
