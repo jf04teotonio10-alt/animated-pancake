@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-pixel: "Press Start 2P", monospace;
+  --font-term: "VT323", monospace;
+}
+
+html, body, #root { height: 100%; margin: 0; background: #05040a; color: #e6f1ff; overflow: hidden; }
+body { font-family: "VT323", monospace; font-size: 18px; user-select: none; }
+
+.pixelated { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+.scanlines::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px);
+  mix-blend-mode: multiply;
+}
+
+.panel {
+  background: linear-gradient(180deg, rgba(14,10,30,0.94), rgba(8,6,18,0.96));
+  border: 1px solid rgba(0, 255, 240, 0.35);
+  box-shadow: 0 0 0 1px rgba(255,0,170,0.15) inset, 0 0 18px rgba(0,255,240,0.12);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.neon-c { color: #00fff0; text-shadow: 0 0 6px rgba(0,255,240,0.8); }
+.neon-m { color: #ff2bd6; text-shadow: 0 0 6px rgba(255,43,214,0.8); }
+.neon-y { color: #fcee0a; text-shadow: 0 0 6px rgba(252,238,10,0.7); }
+.neon-r { color: #ff3b3b; text-shadow: 0 0 6px rgba(255,59,59,0.8); }
+
+.btn {
+  font-family: "Press Start 2P", monospace; font-size: 10px; letter-spacing: 1px;
+  padding: 10px 14px; border: 1px solid #00fff0; color: #00fff0; background: rgba(0,255,240,0.06);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition: all .12s; cursor: pointer;
+}
+.btn:hover:not(:disabled) { background: #00fff0; color: #05040a; box-shadow: 0 0 16px #00fff0; }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn-m { border-color: #ff2bd6; color: #ff2bd6; background: rgba(255,43,214,0.06); }
+.btn-m:hover:not(:disabled) { background: #ff2bd6; color: #05040a; box-shadow: 0 0 16px #ff2bd6; }
+.btn-y { border-color: #fcee0a; color: #fcee0a; background: rgba(252,238,10,0.06); }
+.btn-y:hover:not(:disabled) { background: #fcee0a; color: #05040a; box-shadow: 0 0 16px #fcee0a; }
+
+@keyframes glitch { 0%,100%{transform:translate(0)} 20%{transform:translate(-2px,1px)} 40%{transform:translate(2px,-1px)} 60%{transform:translate(-1px,-1px)} 80%{transform:translate(1px,2px)} }
+.glitch { animation: glitch .35s infinite steps(2); }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1} 20%,24%,55%{opacity:.4} }
+.flicker { animation: flicker 3s infinite; }
+@keyframes slidein { from { transform: translateX(-60px); opacity: 0 } to { transform: none; opacity: 1 } }
+.slidein { animation: slidein .5s ease-out both; }
+@keyframes pop { 0%{transform:scale(.6);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+.pop { animation: pop .35s ease-out both; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #00fff055; }
