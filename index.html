@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiger Life 3D: Albino Edition</title>
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="game-canvas"></canvas>
+
+  <!-- Thought bubble -->
+  <div id="thought" class="hidden">...</div>
+
+  <!-- Top-left: identity -->
+  <div class="panel" id="panel-identity">
+    <div class="tiger-name">🐯 Alba <span class="subtitle">· tigre albino</span></div>
+    <div class="row"><span>Idade:</span><b id="ui-age">Filhote · Dia 1</b></div>
+    <div class="row"><span>Estado:</span><b id="ui-state">Explorando</b></div>
+    <div class="row"><span>Humor:</span><b id="ui-mood">Curioso</b></div>
+    <div class="row small" id="ui-pos">📍 Clareira</div>
+  </div>
+
+  <!-- Top-right: needs -->
+  <div class="panel" id="panel-needs">
+    <div class="panel-title">Necessidades</div>
+    <div class="need"><span>🍖 Fome</span><div class="bar"><div id="bar-hunger" class="fill"></div></div></div>
+    <div class="need"><span>💧 Sede</span><div class="bar"><div id="bar-thirst" class="fill"></div></div></div>
+    <div class="need"><span>⚡ Energia</span><div class="bar"><div id="bar-energy" class="fill"></div></div></div>
+    <div class="need"><span>🔍 Curiosidade</span><div class="bar"><div id="bar-curiosity" class="fill"></div></div></div>
+    <div class="need"><span>🛋️ Conforto</span><div class="bar"><div id="bar-comfort" class="fill"></div></div></div>
+    <div class="save-line"><span id="save-indicator">💾 salvo</span><button id="btn-reset" title="Recomeçar vida">↺</button></div>
+  </div>
+
+  <!-- Bottom-left: personality -->
+  <div class="panel" id="panel-personality">
+    <div class="panel-title">Personalidade</div>
+    <div class="need"><span>Curiosidade</span><div class="bar"><div id="p-curiosity" class="fill alt"></div></div></div>
+    <div class="need"><span>Coragem</span><div class="bar"><div id="p-courage" class="fill alt"></div></div></div>
+    <div class="need"><span>Timidez</span><div class="bar"><div id="p-shyness" class="fill alt"></div></div></div>
+    <div class="need"><span>Sociabilidade</span><div class="bar"><div id="p-sociability" class="fill alt"></div></div></div>
+    <div class="need"><span>Independência</span><div class="bar"><div id="p-independence" class="fill alt"></div></div></div>
+    <div class="need"><span>Brincalhão</span><div class="bar"><div id="p-playfulness" class="fill alt"></div></div></div>
+  </div>
+
+  <!-- Bottom-right: memories -->
+  <div class="panel" id="panel-memories">
+    <div class="panel-title">Memórias</div>
+    <ul id="memory-list"><li class="empty">Nenhuma memória ainda…</li></ul>
+    <div class="pref-line" id="ui-pref">⭐ Local favorito: —</div>
+  </div>
+
+  <!-- Bottom-center: interactions -->
+  <div id="actions">
+    <button data-action="pet" title="Tecla 1">🐾 Acariciar</button>
+    <button data-action="toy" title="Tecla 2">🧶 Brinquedo</button>
+    <button data-action="feed" title="Tecla 3">🍓 Comida</button>
+    <button data-action="drink" title="Tecla 4">💧 Lago</button>
+    <button data-action="sleep" title="Tecla 5">😴 Dormir</button>
+    <button data-action="call" title="Tecla 6">🏠 Chamar</button>
+  </div>
+
+  <!-- Help -->
+  <div id="help">
+    <b>Controles:</b> arrastar = girar câmera · roda = zoom · <b>WASD</b> mover câmera · <b>duplo clique no chão</b> sugerir destino · <b>1–6</b> interagir · <b>C</b> câmera segue/livre
+  </div>
+
+  <!-- Welcome / offline -->
+  <div id="toast" class="hidden"></div>
+
+  <!-- Loading -->
+  <div id="loading"><div class="load-tiger">🐯</div><div>Carregando a floresta…</div></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

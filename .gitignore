@@ -1,0 +1,4 @@
+# Dependências temporárias; a build de execução é distribuída em vendor/.
+node_modules/
+.DS_Store
+Thumbs.db
